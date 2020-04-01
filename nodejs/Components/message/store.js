@@ -1,0 +1,19 @@
+const db = require('mongoose')
+
+
+
+function addMessage(message) {
+    list.push(message)
+}
+
+function getMessages() {
+    return list
+}
+
+module.exports = {
+    add: addMessage,
+    list: getMessages
+    //get
+    //update
+    //delete
+}
