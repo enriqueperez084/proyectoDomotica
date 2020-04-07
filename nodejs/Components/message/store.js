@@ -1,27 +1,52 @@
-const db = require('mongoose')
+
 const Model = require('./model')
 
-//mongodb+srv://db_user_1:<password>@cluster0-dtp5z.mongodb.net/test
-db.Promise = global.Promise //Se asegura que utilice la libreria nativa de promesas
-db.connect('mongodb+srv://db_user_1:wiPHUJh9Fj0drytL@cluster0-dtp5z.mongodb.net/chat_nodejs_db', {
-    useNewUrlParser: true,
-})
-console.log('[db] Conectada con exito')
+
 function addMessage(message) {
-     //list.push(message)
-     const myMessage = new Model(message) //Se agrega el mensaje al modelo y se guarda en la base de datos
-     myMessage.save()
+    //list.push(message)
+    const myMessage = new Model(message) //Se agrega el mensaje al modelo y se guarda en la base de datos
+    myMessage.save()
 }
 
-async function getMessages() {
-     //return list
-     const messages = await Model.find() //Se solicitan los mensajes de manera asincrona
-    return messages
+async function getMessages(filterUser) {
+    return new Promise((resolve, reject) => {
+        let filter = {}
+        if (filterUser !== null) {
+            filter = { user: filterUser }
+        }
+        const messages = Model.find(filter) //Se solicitan los mensajes de manera asincrona
+        .populate('user')
+        .exec((error, populated) =>{
+           if (error) {
+               reject(error)
+            return false
+        }
+        resolve(populated) 
+        })
+    })
+
 }
 
+async function updateText(id, message) {
+    const foundMessage = await Model.findOne({
+        _id: id
+    })
+    foundMessage.message = message
+
+    const newMessage = await foundMessage.save()
+    return newMessage
+}
+
+function removeMessage(id) {
+    return Model.deleteOne({
+        _id: id
+    })
+}
 module.exports = {
     add: addMessage,
-    list: getMessages
+    list: getMessages,
+    updateText: updateText,
+    remove: removeMessage,
     //get
     //update
     //delete

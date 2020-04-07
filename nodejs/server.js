@@ -1,7 +1,10 @@
 const express = require('express'); //Asi se trae un modulo, asi se trajo express
 const bodyParser = require('body-parser');
+const db = require ('./db')
 const router = require('./network/routes')
 //import express from 'express' //Esta forma es una manera antigua
+
+db('mongodb+srv://db_user_1:wiPHUJh9Fj0drytL@cluster0-dtp5z.mongodb.net/chat_nodejs_db')
 
 var app = express() //Se crea la app en express
 
