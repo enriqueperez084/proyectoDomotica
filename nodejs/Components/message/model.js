@@ -9,7 +9,7 @@ const mySchema = new Schema({ //Se crea un esquema especifico para guardar los d
         required : true, //Evita que el mensaje sea undefined
     },
     date: Date,
-})
+});
 
-const model = mongoose.model('Message', mySchema)
+const model = mongoose.model('Message', mySchema) //Se define que el modelo sera message y que tendra el formato de mySchema
 module.exports = model
