@@ -8,7 +8,7 @@ const char* password = "8871B1BEAEB0";
 
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.0.144";
-const char* mqtt_server = "192.168.0.250";
+const char* mqtt_server = "192.168.0.6";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -17,7 +17,11 @@ char msg[50];
 int value = 0;
 
 // LED Pin
-const int ledPin = 2;
+const char lamp1 = 23;
+const char lamp2 = 22;
+const char AC = 19;
+const char extra = 21;
+const char ledPin = 2;
 
 void setup() {
   Serial.begin(115200);
@@ -27,6 +31,10 @@ void setup() {
   client.setCallback(callback);
 
   pinMode(ledPin, OUTPUT);
+  pinMode(lamp1, OUTPUT);
+  pinMode(lamp2, OUTPUT);
+  pinMode(AC, OUTPUT);
+  pinMode(extra, OUTPUT);
 }
 
 void setup_wifi() {
@@ -52,7 +60,7 @@ void setup_wifi() {
 void callback(char* topic, byte* message, unsigned int length) {
   Serial.print("Mensaje recibido en topico: ");
   Serial.print(topic);
-  Serial.print(". Mensaje: ");
+  Serial.print(" Mensaje: ");
   String messageTemp;
   
   for (int i = 0; i < length; i++) {
@@ -65,17 +73,50 @@ void callback(char* topic, byte* message, unsigned int length) {
 
   // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
   // Changes the output state according to the message
-  if (String(topic) == "test/message") {
-    Serial.print("Changing output to ");
-    if(messageTemp == "on"){
-      Serial.println("on");
-      digitalWrite(ledPin, HIGH);
+  if (String(topic) == "esp32/lamp1") {
+    Serial.print("Changing lamp1 to ");
+    if(messageTemp == "Encendido"){
+      Serial.println("Encendido");
+      digitalWrite(lamp1, HIGH);
     }
-    else if(messageTemp == "off"){
-      Serial.println("off");
-      digitalWrite(ledPin, LOW);
+    else if(messageTemp == "Apagado"){
+      Serial.println("Apagado");
+      digitalWrite(lamp1, LOW);
     }
   }
+    if (String(topic) == "esp32/lamp2") {
+    Serial.print("Changing lamp2 to ");
+    if(messageTemp == "Encendido"){
+      Serial.println("Encendido");
+      digitalWrite(lamp2, HIGH);
+    }
+    else if(messageTemp == "Apagado"){
+      Serial.println("Apagado");
+      digitalWrite(lamp2, LOW);
+    }
+  }
+    if (String(topic) == "esp32/ac") {
+    Serial.print("Changing AC to ");
+    if(messageTemp == "Encendido"){
+      Serial.println("Encendido");
+      digitalWrite(AC, HIGH);
+    }
+    else if(messageTemp == "Apagado"){
+      Serial.println("Apagado");
+      digitalWrite(AC, LOW);
+    }
+  }
+  if (String(topic) == "esp32/extra") {
+    Serial.print("Changing extra output to ");
+    if(messageTemp == "Encendido"){
+      Serial.println("Encendido");
+      digitalWrite(extra, HIGH);
+    }
+    else if(messageTemp == "Apagado"){
+      Serial.println("Apagado");
+      digitalWrite(extra, LOW);
+  }
+}
 }
 
 void reconnect() {
@@ -86,7 +127,10 @@ void reconnect() {
     if (client.connect("ESP32")) {
       Serial.println("Conectado");
       // Subscribe
-      client.subscribe("test/message");
+      client.subscribe("esp32/lamp1");
+      client.subscribe("esp32/lamp2");
+      client.subscribe("esp32/ac");
+      client.subscribe("esp32/extra");
     } else {
       Serial.print("Error de conexion, rc=");
       Serial.print(client.state());
@@ -107,12 +151,12 @@ void loop() {
     lastMsg = now;
     char* mensaje = "mensaje desde la esp32";
     
-    client.publish("esp32/test", mensaje);
+    /* client.publish("esp32/test", mensaje);
     /*digitalWrite(ledPin, HIGH);
     delay(1000);
     digitalWrite(ledPin, LOW);
     delay(1000);*/
-    Serial.println("Mensaje enviado");
-
+    /*Serial.println("Mensaje enviado");
+*/
   }
 }
