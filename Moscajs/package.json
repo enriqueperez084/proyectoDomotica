@@ -8,8 +8,10 @@
     "ascoltatori": "^4.3.0",
     "chalk": "^4.0.0",
     "debug": "^4.1.1",
+    "express": "^4.17.1",
     "mongoose": "^5.9.9",
-    "mosca": "^2.8.3"
+    "mosca": "^2.8.3",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.3",
